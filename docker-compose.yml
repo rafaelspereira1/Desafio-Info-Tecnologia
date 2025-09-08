@@ -1,0 +1,46 @@
+services:
+  backend:
+    build: ./backend
+    container_name: vehicles_api
+    environment:
+      - PORT=3000
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./backend/data:/app/data
+    ports:
+      - "3000:3000"
+
+  consumer:
+    build: ./backend
+    container_name: vehicles_consumer
+    command: npm run start:consumer
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./backend/data:/app/data
+
+  frontend:
+    build: ./frontend
+    container_name: vehicles_frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+networks:
+  default:
+    name: vehicles_net
