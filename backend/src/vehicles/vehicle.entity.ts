@@ -1,6 +1,6 @@
 export interface Vehicle {
   id: string;
-  placa: string; // license plate
+  placa: string;
   chassi: string;
   renavam: string;
   modelo: string;
