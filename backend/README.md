@@ -1,6 +1,48 @@
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
+# Backend API - Veículos
+
+CRUD de veículos utilizando NestJS.
+
+## Executar
+
+Instalar dependências e iniciar em desenvolvimento:
+
+```
+npm install
+npm run start:dev
+```
+
+## Endpoints
+
+| Método | Rota          | Descrição        |
+| ------ | ------------- | ---------------- |
+| POST   | /vehicles     | Cria veículo     |
+| GET    | /vehicles     | Lista veículos   |
+| GET    | /vehicles/:id | Obtém veículo    |
+| PUT    | /vehicles/:id | Atualiza veículo |
+| DELETE | /vehicles/:id | Remove veículo   |
+
+Body POST/PUT (JSON):
+
+```
+{
+  "placa": "ABC1D23",
+  "chassi": "12345678901234567",
+  "renavam": "123456789",
+  "modelo": "Modelo X",
+  "marca": "Marca Y",
+  "ano": 2024
+}
+```
+
+## Testes
+
+```
+npm test
+npm run test:e2e
+```
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest

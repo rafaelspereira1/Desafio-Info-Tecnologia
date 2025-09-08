@@ -1,0 +1,24 @@
+[
+  {
+    "id": "2d491471-9cf0-4e67-b0e7-310fe9071e66",
+    "placa": "ABC1D23",
+    "chassi": "12345678901234567",
+    "renavam": "123456789",
+    "modelo": "Modelo X",
+    "marca": "Marca Y",
+    "ano": 2024,
+    "createdAt": "2025-09-08T11:33:07.763Z",
+    "updatedAt": "2025-09-08T11:33:07.763Z"
+  },
+  {
+    "id": "b5c4252e-8d29-439e-865a-d189a8de5cd1",
+    "placa": "DEF2G34",
+    "chassi": "ABCDEFGH123456789",
+    "renavam": "987654321",
+    "modelo": "Model 3",
+    "marca": "Tesla",
+    "ano": 2024,
+    "createdAt": "2025-09-08T11:33:14.452Z",
+    "updatedAt": "2025-09-08T11:33:14.452Z"
+  }
+]
