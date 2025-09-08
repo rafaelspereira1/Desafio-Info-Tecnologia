@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { VehiclesService } from './vehicles.service';
 
 @Component({
@@ -16,8 +16,12 @@ import { VehiclesService } from './vehicles.service';
         </button>
       </div>
 
-      <form class="card" (ngSubmit)="add()" #f="ngForm">
+      <form class="card" (ngSubmit)="add(f)" #f="ngForm" novalidate>
         <h2>Novo Veículo</h2>
+        <div *ngIf="f.submitted && f.invalid" class="alert error-banner">
+          Existem campos inválidos. Verifique os destaques.
+        </div>
+        <div *ngIf="createError" class="alert api-error">{{ createError }}</div>
         <div class="grid">
           <label
             >Placa
@@ -25,9 +29,19 @@ import { VehiclesService } from './vehicles.service';
               name="placa"
               required
               maxlength="7"
-              [(ngModel)]="form.placa"
               placeholder="ABC1D23"
+              [(ngModel)]="form.placa"
+              #placa="ngModel"
+              (input)="onFieldChange('placa')"
+              [class.invalid]="placa.invalid && showError['placa']"
             />
+            <small
+              *ngIf="placa.errors && showError['placa']"
+              class="field-error"
+            >
+              {{ placa.errors['required'] ? 'Placa obrigatória.' : '' }}
+              {{ placa.errors['maxlength'] ? 'Máx. 7 caracteres.' : '' }}
+            </small>
           </label>
           <label
             >Chassi
@@ -37,7 +51,17 @@ import { VehiclesService } from './vehicles.service';
               minlength="17"
               maxlength="20"
               [(ngModel)]="form.chassi"
+              #chassi="ngModel"
+              (input)="onFieldChange('chassi')"
+              [class.invalid]="chassi.invalid && showError['chassi']"
             />
+            <small
+              *ngIf="chassi.errors && showError['chassi']"
+              class="field-error"
+            >
+              {{ chassi.errors['required'] ? 'Chassi obrigatório.' : '' }}
+              {{ chassi.errors['minlength'] ? 'Mín. 17 caracteres.' : '' }}
+            </small>
           </label>
           <label
             >Renavam
@@ -47,15 +71,49 @@ import { VehiclesService } from './vehicles.service';
               minlength="9"
               maxlength="11"
               [(ngModel)]="form.renavam"
+              #renavam="ngModel"
+              (input)="onFieldChange('renavam')"
+              [class.invalid]="renavam.invalid && showError['renavam']"
             />
+            <small
+              *ngIf="renavam.errors && showError['renavam']"
+              class="field-error"
+            >
+              {{ renavam.errors['required'] ? 'Renavam obrigatório.' : '' }}
+              {{ renavam.errors['minlength'] ? 'Mín. 9 caracteres.' : '' }}
+            </small>
           </label>
           <label
             >Modelo
-            <input name="modelo" required [(ngModel)]="form.modelo" />
+            <input
+              name="modelo"
+              required
+              [(ngModel)]="form.modelo"
+              #modelo="ngModel"
+              (input)="onFieldChange('modelo')"
+              [class.invalid]="modelo.invalid && showError['modelo']"
+            />
+            <small
+              *ngIf="modelo.errors && showError['modelo']"
+              class="field-error"
+              >Modelo obrigatório.</small
+            >
           </label>
           <label
             >Marca
-            <input name="marca" required [(ngModel)]="form.marca" />
+            <input
+              name="marca"
+              required
+              [(ngModel)]="form.marca"
+              #marca="ngModel"
+              (input)="onFieldChange('marca')"
+              [class.invalid]="marca.invalid && showError['marca']"
+            />
+            <small
+              *ngIf="marca.errors && showError['marca']"
+              class="field-error"
+              >Marca obrigatória.</small
+            >
           </label>
           <label
             >Ano
@@ -66,13 +124,20 @@ import { VehiclesService } from './vehicles.service';
               min="1900"
               max="2100"
               [(ngModel)]="form.ano"
+              #ano="ngModel"
+              (input)="onFieldChange('ano')"
+              [class.invalid]="ano.invalid && showError['ano']"
             />
+            <small *ngIf="ano.errors && showError['ano']" class="field-error">
+              {{ ano.errors['required'] ? 'Ano obrigatório.' : '' }}
+              {{ ano.errors['min'] ? 'Ano mínimo 1900.' : '' }}
+              {{ ano.errors['max'] ? 'Ano máximo 2100.' : '' }}
+            </small>
           </label>
         </div>
         <button type="submit" [disabled]="f.invalid || creating">
           Adicionar
         </button>
-        <span *ngIf="createError" class="error">{{ createError }}</span>
       </form>
 
       <div *ngIf="svc.error()" class="error">{{ svc.error() }}</div>
@@ -152,6 +217,10 @@ import { VehiclesService } from './vehicles.service';
         border-radius: 4px;
         font-size: 0.9rem;
       }
+      input.invalid {
+        border-color: #d32f2f;
+        background: #ffecec;
+      }
       button {
         cursor: pointer;
         padding: 0.5rem 0.9rem;
@@ -187,6 +256,27 @@ import { VehiclesService } from './vehicles.service';
         font-size: 0.8rem;
         margin-left: 0.75rem;
       }
+      .field-error {
+        color: #d32f2f;
+        font-size: 0.65rem;
+        margin-top: 0.2rem;
+      }
+      .alert {
+        padding: 0.6rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        margin-bottom: 0.8rem;
+      }
+      .error-banner {
+        background: #ffe5e5;
+        border: 1px solid #d32f2f;
+        color: #8b0000;
+      }
+      .api-error {
+        background: #fff4e5;
+        border: 1px solid #f5a623;
+        color: #7a4b00;
+      }
       .actions {
         display: flex;
         gap: 0.5rem;
@@ -194,7 +284,7 @@ import { VehiclesService } from './vehicles.service';
     `,
   ],
 })
-export class VehiclesListComponent implements OnInit {
+export class VehiclesListComponent implements OnInit, OnDestroy {
   svc = inject(VehiclesService);
   creating = false;
   removingId: string | null = null;
@@ -209,6 +299,10 @@ export class VehiclesListComponent implements OnInit {
     ano: new Date().getFullYear(),
   };
 
+  showError: Record<string, boolean> = {};
+  private debounceTimers: Record<string, any> = {};
+  private debounceMs = 500;
+
   ngOnInit(): void {
     this.reload();
   }
@@ -217,7 +311,7 @@ export class VehiclesListComponent implements OnInit {
     this.svc.refresh();
   }
 
-  add() {
+  add(f: NgForm) {
     this.creating = true;
     this.createError = null;
     const { placa, chassi, renavam, modelo, marca, ano } = this.form;
@@ -234,6 +328,8 @@ export class VehiclesListComponent implements OnInit {
             marca: '',
             ano: new Date().getFullYear(),
           };
+          f.resetForm({ ano: new Date().getFullYear() });
+          this.resetErrors();
           this.reload();
         },
         error: (e) => {
@@ -253,5 +349,27 @@ export class VehiclesListComponent implements OnInit {
       },
       error: () => (this.removingId = null),
     });
+  }
+
+  onFieldChange(field: string) {
+    this.showError[field] = false;
+    if (this.debounceTimers[field]) {
+      clearTimeout(this.debounceTimers[field]);
+    }
+    this.debounceTimers[field] = setTimeout(() => {
+      this.showError[field] = true;
+    }, this.debounceMs);
+  }
+
+  private resetErrors() {
+    Object.keys(this.debounceTimers).forEach((k) =>
+      clearTimeout(this.debounceTimers[k])
+    );
+    this.showError = {};
+    this.debounceTimers = {};
+  }
+
+  ngOnDestroy(): void {
+    this.resetErrors();
   }
 }

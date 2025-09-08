@@ -153,5 +153,3 @@ docker compose up -d --build
 - [x] README abrangente
 
 ---
-
-Qualquer dúvida ou melhoria desejada, abra uma issue ou proposta de PR.
